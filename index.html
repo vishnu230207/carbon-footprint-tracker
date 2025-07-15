@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoTrack 🌱 - Advanced Carbon Footprint Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>🌱 EcoTrack</h1>
+                    <p class="tagline">Track your impact, reduce your footprint</p>
+                </div>
+                <nav class="nav">
+                    <button class="nav-btn active" data-section="dashboard">🏠 Dashboard</button>
+                    <button class="nav-btn" data-section="goals">🎯 Goals</button>
+                    <button class="nav-btn" data-section="leaderboard">⭐ Leaderboard</button>
+                    <button class="nav-btn" data-section="tips">💡 Tips</button>
+                    <button class="theme-toggle" id="themeToggle">🌙</button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Dashboard Section -->
+        <section class="section active" id="dashboard">
+            <div class="container">
+                <div class="dashboard-header">
+                    <h2>🌍 Your Carbon Dashboard</h2>
+                    <div class="eco-score">
+                        <div class="score-circle">
+                            <span class="score-value" id="ecoScore">85</span>
+                            <span class="score-label">Eco Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Input Forms -->
+                    <div class="card input-card">
+                        <h3>📝 Daily Input</h3>
+                        <div class="input-tabs">
+                            <button class="tab-btn active" data-tab="transport">🚗 Transport</button>
+                            <button class="tab-btn" data-tab="energy">⚡ Energy</button>
+                            <button class="tab-btn" data-tab="food">🍽️ Food</button>
+                            <button class="tab-btn" data-tab="waste">🗑️ Waste</button>
+                        </div>
+
+                        <div class="tab-content active" id="transport">
+                            <div class="form-group">
+                                <label>Transport Mode</label>
+                                <select id="transportMode">
+                                    <option value="car">🚗 Car</option>
+                                    <option value="bus">🚌 Bus</option>
+                                    <option value="train">🚂 Train</option>
+                                    <option value="bike">🚴 Bike</option>
+                                    <option value="walk">🚶 Walk</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Distance (km)</label>
+                                <input type="number" id="transportDistance" placeholder="Enter distance">
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="energy">
+                            <div class="form-group">
+                                <label>Monthly kWh Usage</label>
+                                <input type="number" id="energyUsage" placeholder="Enter kWh">
+                            </div>
+                            <div class="form-group">
+                                <label>Home Size</label>
+                                <select id="homeSize">
+                                    <option value="small">🏠 Small (1-2 rooms)</option>
+                                    <option value="medium">🏡 Medium (3-4 rooms)</option>
+                                    <option value="large">🏰 Large (5+ rooms)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="food">
+                            <div class="form-group">
+                                <label>Diet Type</label>
+                                <select id="dietType">
+                                    <option value="omnivore">🥩 Omnivore</option>
+                                    <option value="vegetarian">🥕 Vegetarian</option>
+                                    <option value="vegan">🌱 Vegan</option>
+                                    <option value="pescatarian">🐟 Pescatarian</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Meals per day</label>
+                                <input type="number" id="mealsPerDay" placeholder="Number of meals" value="3">
+                            </div>
+                        </div>
+
+                        <div class="tab-content" id="waste">
+                            <div class="form-group">
+                                <label>Waste Generation (kg/week)</label>
+                                <input type="number" id="wasteGeneration" placeholder="Enter waste in kg">
+                            </div>
+                            <div class="form-group">
+                                <label>Water Usage (litres/day)</label>
+                                <input type="number" id="waterUsage" placeholder="Enter water usage">
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="calculateFootprint()">🔄 Calculate Footprint</button>
+                    </div>
+
+                    <!-- Results Card -->
+                    <div class="card results-card">
+                        <h3>📊 Your Carbon Footprint</h3>
+                        <div class="total-emissions">
+                            <div class="emission-value">
+                                <span class="value" id="totalEmissions">0</span>
+                                <span class="unit">kg CO₂/year</span>
+                            </div>
+                            <div class="emission-status" id="emissionStatus">
+                                <span class="status-icon">🌱</span>
+                                <span class="status-text">Great job! Below average</span>
+                            </div>
+                        </div>
+                        <div class="emissions-breakdown">
+                            <div class="breakdown-item">
+                                <span class="category">🚗 Transport</span>
+                                <span class="amount" id="transportEmissions">0 kg</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="category">⚡ Energy</span>
+                                <span class="amount" id="energyEmissions">0 kg</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="category">🍽️ Food</span>
+                                <span class="amount" id="foodEmissions">0 kg</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="category">🗑️ Waste</span>
+                                <span class="amount" id="wasteEmissions">0 kg</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Card -->
+                    <div class="card chart-card">
+                        <h3>📈 Emission Analysis</h3>
+                        <div class="chart-container">
+                            <canvas id="emissionChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Progress Card -->
+                    <div class="card progress-card">
+                        <h3>🏆 Your Progress</h3>
+                        <div class="progress-stats">
+                            <div class="stat">
+                                <span class="stat-value" id="greenPoints">1250</span>
+                                <span class="stat-label">Green Points</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="weekStreak">7</span>
+                                <span class="stat-label">Day Streak</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="co2Saved">45</span>
+                                <span class="stat-label">kg CO₂ Saved</span>
+                            </div>
+                        </div>
+                        <div class="badges">
+                            <div class="badge earned">🌿 Eco Beginner</div>
+                            <div class="badge earned">🌻 Nature Guardian</div>
+                            <div class="badge locked">🌍 Earth Hero</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Goals Section -->
+        <section class="section" id="goals">
+            <div class="container">
+                <h2>🎯 Your Sustainability Goals</h2>
+                <div class="goals-grid">
+                    <div class="card goal-card">
+                        <h3>🎯 Monthly CO₂ Target</h3>
+                        <div class="goal-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span>Current: 340 kg</span>
+                                <span>Target: 250 kg</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card goal-card">
+                        <h3>🚴 Green Transport Days</h3>
+                        <div class="goal-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 80%"></div>
+                            </div>
+                            <div class="progress-text">
+                                <span>Current: 16 days</span>
+                                <span>Target: 20 days</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card challenge-card">
+                        <h3>🌟 Weekly Challenges</h3>
+                        <div class="challenges">
+                            <div class="challenge completed">
+                                <span class="challenge-icon">✅</span>
+                                <span class="challenge-text">Use bike for 3 days</span>
+                                <span class="challenge-points">+50 pts</span>
+                            </div>
+                            <div class="challenge active">
+                                <span class="challenge-icon">🔄</span>
+                                <span class="challenge-text">Reduce energy usage by 10%</span>
+                                <span class="challenge-points">+100 pts</span>
+                            </div>
+                            <div class="challenge">
+                                <span class="challenge-icon">⏳</span>
+                                <span class="challenge-text">Try 2 vegan meals</span>
+                                <span class="challenge-points">+75 pts</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leaderboard Section -->
+        <section class="section" id="leaderboard">
+            <div class="container">
+                <h2>⭐ Global Leaderboard</h2>
+                <div class="leaderboard-header">
+                    <div class="user-rank">
+                        <span class="rank-badge">🏆 #4</span>
+                        <span class="rank-text">You're ranked #4 this week!</span>
+                    </div>
+                </div>
+                <div class="leaderboard-list">
+                    <div class="leaderboard-item rank-1">
+                        <div class="rank">🥇</div>
+                        <div class="user-info">
+                            <img src="https://source.unsplash.com/100x100/?avatar,user,face" alt="User">
+                            <div>
+                                <div class="username">EcoWarrior23</div>
+                                <div class="user-stats">2,450 pts • 🌍 Earth Hero</div>
+                            </div>
+                        </div>
+                        <div class="points">2,450</div>
+                    </div>
+                    <div class="leaderboard-item rank-2">
+                        <div class="rank">🥈</div>
+                        <div class="user-info">
+                            <img src="https://source.unsplash.com/100x100/?person,portrait" alt="User">
+                            <div>
+                                <div class="username">GreenGuru</div>
+                                <div class="user-stats">2,180 pts • 🌻 Nature Guardian</div>
+                            </div>
+                        </div>
+                        <div class="points">2,180</div>
+                    </div>
+                    <div class="leaderboard-item rank-3">
+                        <div class="rank">🥉</div>
+                        <div class="user-info">
+                            <img src="https://source.unsplash.com/100x100/?face,smile" alt="User">
+                            <div>
+                                <div class="username">NatureLover</div>
+                                <div class="user-stats">1,890 pts • 🌻 Nature Guardian</div>
+                            </div>
+                        </div>
+                        <div class="points">1,890</div>
+                    </div>
+                    <div class="leaderboard-item current-user">
+                        <div class="rank">4️⃣</div>
+                        <div class="user-info">
+                            <img src="https://source.unsplash.com/100x100/?user,happy" alt="You">
+                            <div>
+                                <div class="username">You</div>
+                                <div class="user-stats">1,250 pts • 🌻 Nature Guardian</div>
+                            </div>
+                        </div>
+                        <div class="points">1,250</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tips Section -->
+        <section class="section" id="tips">
+            <div class="container">
+                <h2>💡 Sustainability Tips & Insights</h2>
+                <div class="tips-grid">
+                    <div class="card tip-card">
+                        <div class="tip-icon">🚗</div>
+                        <h3>Smart Transportation</h3>
+                        <p>Choose walking, cycling, or public transport for short distances. This can reduce your transport emissions by up to 60%.</p>
+                        <div class="tip-impact">Impact: -200 kg CO₂/year</div>
+                    </div>
+                    <div class="card tip-card">
+                        <div class="tip-icon">⚡</div>
+                        <h3>Energy Efficiency</h3>
+                        <p>Use LED bulbs, unplug devices, and optimize heating/cooling. Small changes can save 15-20% on energy bills.</p>
+                        <div class="tip-impact">Impact: -150 kg CO₂/year</div>
+                    </div>
+                    <div class="card tip-card">
+                        <div class="tip-icon">🌱</div>
+                        <h3>Plant-Based Meals</h3>
+                        <p>Try "Meatless Monday" or add more plant-based meals to your diet. Even one day per week makes a difference.</p>
+                        <div class="tip-impact">Impact: -180 kg CO₂/year</div>
+                    </div>
+                    <div class="card tip-card">
+                        <div class="tip-icon">♻️</div>
+                        <h3>Waste Reduction</h3>
+                        <p>Reduce, reuse, recycle. Composting organic waste and buying less packaging can significantly reduce your footprint.</p>
+                        <div class="tip-impact">Impact: -120 kg CO₂/year</div>
+                    </div>
+                    <div class="card tip-card">
+                        <div class="tip-icon">🌍</div>
+                        <h3>SDG 12: Responsible Consumption</h3>
+                        <p>Support sustainable brands, buy local products, and choose quality over quantity in your purchases.</p>
+                        <div class="tip-impact">Impact: -300 kg CO₂/year</div>
+                    </div>
+                    <div class="card tip-card">
+                        <div class="tip-icon">🌳</div>
+                        <h3>Tree Planting Initiative</h3>
+                        <p>Plant trees or support reforestation projects. One tree can absorb 22 kg of CO₂ per year.</p>
+                        <div class="tip-impact">Impact: -22 kg CO₂/tree/year</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
